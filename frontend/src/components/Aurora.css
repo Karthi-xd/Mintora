@@ -1,4 +1,4 @@
-.aurora {
+.field-backdrop {
   position: fixed;
   inset: 0;
   z-index: 0;
@@ -7,72 +7,62 @@
   pointer-events: none;
 }
 
-.aurora__blob {
+.field-backdrop__rosette {
   position: absolute;
-  width: 60vw;
-  height: 60vw;
-  max-width: 780px;
-  max-height: 780px;
-  border-radius: 50%;
-  filter: blur(90px);
-  opacity: 0.45;
+  top: 50%;
+  left: 50%;
+  width: 160vmax;
+  height: 160vmax;
+  transform: translate(-50%, -50%);
   will-change: transform;
 }
 
-.aurora__blob--gold {
-  top: -18%;
-  left: -10%;
-  background: radial-gradient(circle at 30% 30%, var(--accent-gold), transparent 70%);
-  animation: drift-a 26s ease-in-out infinite;
+.field-backdrop__rosette--a {
+  background:
+    repeating-conic-gradient(
+      from 0deg,
+      transparent 0deg 1.6deg,
+      rgba(184, 115, 59, 0.05) 1.6deg 1.9deg
+    );
+  animation: spin-cw 220s linear infinite;
 }
 
-.aurora__blob--violet {
-  bottom: -22%;
-  right: -12%;
-  background: radial-gradient(circle at 60% 60%, var(--accent-violet), transparent 70%);
-  animation: drift-b 32s ease-in-out infinite;
+.field-backdrop__rosette--b {
+  width: 130vmax;
+  height: 130vmax;
+  background:
+    repeating-radial-gradient(
+      circle at center,
+      transparent 0px 34px,
+      rgba(92, 156, 134, 0.05) 34px 35px
+    );
+  animation: spin-ccw 260s linear infinite;
+  mix-blend-mode: screen;
 }
 
-.aurora__blob--ember {
-  top: 30%;
-  left: 40%;
-  width: 40vw;
-  height: 40vw;
-  max-width: 520px;
-  max-height: 520px;
-  opacity: 0.25;
-  background: radial-gradient(circle, var(--accent-ember), transparent 70%);
-  animation: drift-c 22s ease-in-out infinite;
-}
-
-.aurora__grain {
+.field-backdrop__grain {
   position: absolute;
   inset: 0;
-  opacity: 0.035;
+  opacity: 0.04;
   mix-blend-mode: overlay;
 }
 
-.aurora__vignette {
+.field-backdrop__vignette {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 50% 40%, transparent 0%, var(--bg) 88%);
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 38%, transparent 0%, var(--bg) 82%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.25), transparent 20%, transparent 75%, rgba(0, 0, 0, 0.4));
 }
 
-@keyframes drift-a {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(6vw, 8vh) scale(1.12); }
+@keyframes spin-cw {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
-@keyframes drift-b {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-5vw, -6vh) scale(1.08); }
-}
-
-@keyframes drift-c {
-  0%, 100% { transform: translate(-50%, -50%) scale(1); }
-  50% { transform: translate(-46%, -54%) scale(1.15); }
+@keyframes spin-ccw {
+  to { transform: translate(-50%, -50%) rotate(-360deg); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .aurora__blob { animation: none; }
+  .field-backdrop__rosette { animation: none; }
 }
