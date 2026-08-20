@@ -9,10 +9,10 @@ const SEPOLIA_CHAIN_ID_HEX = '0xaa36a7' // 11155111
 const BLOCKSCOUT_BASE = 'https://eth-sepolia.blockscout.com'
 
 const STEPS = [
-  { key: 'uploading-image', label: 'Uploading artwork to IPFS' },
+  { key: 'uploading-image', label: 'Pinning artwork to IPFS' },
   { key: 'uploading-metadata', label: 'Pinning metadata to IPFS' },
-  { key: 'awaiting-signature', label: 'Waiting for wallet signature' },
-  { key: 'pending', label: 'Confirming on Sepolia' }
+  { key: 'awaiting-signature', label: 'Awaiting wallet signature' },
+  { key: 'pending', label: 'Striking on Sepolia' }
 ]
 
 function shortAddr(addr) {
@@ -175,6 +175,8 @@ export default function App() {
     ? `${BLOCKSCOUT_BASE}/token/${CONTRACT_ADDRESS}/instance/${tokenId}`
     : `${BLOCKSCOUT_BASE}/tx/${txHash}`
 
+  const editionLabel = tokenId ? `No. ${tokenId.padStart(4, '0')}` : 'No. ————'
+
   return (
     <>
       <Aurora />
@@ -202,125 +204,136 @@ export default function App() {
         <div className="hero">
           <span className="hero__eyebrow">On-chain · Sepolia testnet</span>
           <h1 className="hero__title">
-            <SplitText text="Mint something" as="span" />
-            <br />
-            <SplitText text="that lasts." delay={0.4} />
+            <SplitText text="Strike your mark" as="span" />
           </h1>
           <p className="hero__sub">
-            Upload artwork, pin it to IPFS, and mint it as an NFT straight from your browser wallet.
+            Upload artwork, pin it to IPFS, and press it into a token on Sepolia —
+            straight from your browser wallet.
           </p>
         </div>
 
-        <div className="card">
-          {!account || !chainOk ? (
-            <div className="connect-block">
-              <p className="card__step">Step 1</p>
-              <p>
-                {!window.ethereum
-                  ? 'No wallet detected. Install MetaMask to continue.'
-                  : !account
-                  ? 'Connect your wallet to start minting on Sepolia.'
-                  : 'Wrong network — switch to Sepolia to continue.'}
-              </p>
-              {account && !chainOk ? (
-                <button className="btn-primary" onClick={switchToSepolia}>
-                  Switch to Sepolia
-                </button>
-              ) : (
-                <button className="btn-primary" onClick={connectWallet} disabled={connecting}>
-                  {connecting ? 'Connecting…' : 'Connect Wallet'}
-                </button>
-              )}
-              {connectError && <div className="error-box">{connectError}</div>}
-            </div>
-          ) : stage === 'confirmed' ? (
-            <div className="success-block">
-              <div className="success-mark">✓</div>
-              <h3>Minted</h3>
-              <p>Your NFT is confirmed on Sepolia.</p>
-              <a className="success-link" href={nftLink} target="_blank" rel="noreferrer">
-                View on Blockscout ↗
-              </a>
-              <button className="btn-secondary" onClick={resetForm}>
-                Mint another
-              </button>
-            </div>
-          ) : stage !== 'idle' && stage !== 'error' ? (
-            <div>
-              <p className="card__step">Minting</p>
-              <h2 className="card__title">Sit tight</h2>
-              <ul className="status-list">
-                {STEPS.map((s, i) => {
-                  const currentIndex = STEPS.findIndex((x) => x.key === stage)
-                  const done = i < currentIndex
-                  const active = i === currentIndex
-                  return (
-                    <li
-                      key={s.key}
-                      className={`status-row ${active ? 'status-row--active' : ''} ${done ? 'status-row--done' : ''}`}
-                    >
-                      <span className="status-icon">{done ? '✓' : ''}</span>
-                      {s.label}
-                    </li>
-                  )
-                })}
-              </ul>
-              {txHash && (
-                <p className="hash-tag">
-                  tx: {txHash} —{' '}
-                  <a href={`${BLOCKSCOUT_BASE}/tx/${txHash}`} target="_blank" rel="noreferrer">
-                    view
-                  </a>
+        <div className="ticket-wrap">
+          <div className="ticket-perf" />
+          <div className="ticket">
+            <div className="seal">◆</div>
+
+            {!account || !chainOk ? (
+              <div className="connect-block">
+                <p style={{ marginTop: 8 }}>
+                  {!window.ethereum
+                    ? 'No wallet detected. Install MetaMask to continue.'
+                    : !account
+                    ? 'Connect your wallet to begin the mint.'
+                    : 'Wrong network — switch to Sepolia to continue.'}
                 </p>
-              )}
-            </div>
-          ) : (
-            <div>
-              <p className="card__step">Step 2</p>
-              <h2 className="card__title">Create your NFT</h2>
-
-              {stage === 'error' && errorMsg && <div className="error-box">{errorMsg}</div>}
-
-              <div className="field">
-                <label>Artwork</label>
-                <div className="dropzone">
-                  {preview ? (
-                    <img src={preview} alt="Selected artwork preview" className="dropzone__preview" />
-                  ) : (
-                    <p className="dropzone__hint">
-                      <strong>Click to upload</strong> or drag an image here
-                    </p>
-                  )}
-                  <input type="file" accept="image/*" onChange={handleFile} />
+                {account && !chainOk ? (
+                  <button className="btn-press" onClick={switchToSepolia}>
+                    Switch to Sepolia
+                  </button>
+                ) : (
+                  <button className="btn-press" onClick={connectWallet} disabled={connecting}>
+                    {connecting ? 'Connecting…' : 'Connect Wallet'}
+                  </button>
+                )}
+                {connectError && <div className="error-box">{connectError}</div>}
+              </div>
+            ) : stage === 'confirmed' ? (
+              <div className="cert">
+                <div className="ticket__meta" style={{ justifyContent: 'center', marginTop: 6 }}>
+                  <span>Certificate of Mint</span>
                 </div>
+                <div className="cert__seal">✓</div>
+                <h3>Struck &amp; Confirmed</h3>
+                <p>Edition {editionLabel} is live on Sepolia.</p>
+                <a className="cert-link" href={nftLink} target="_blank" rel="noreferrer">
+                  View on Blockscout ↗
+                </a>
+                <button className="btn-ghost" onClick={resetForm}>
+                  Mint Another
+                </button>
               </div>
-
-              <div className="field">
-                <label>Name</label>
-                <input
-                  type="text"
-                  placeholder="e.g. Obsidian Drift #001"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  maxLength={80}
-                />
+            ) : stage !== 'idle' && stage !== 'error' ? (
+              <div>
+                <div className="ticket__meta">
+                  <span>Minting</span>
+                  <strong>{editionLabel}</strong>
+                </div>
+                <h2 className="ticket__title">In Progress</h2>
+                <ul className="status-list">
+                  {STEPS.map((s, i) => {
+                    const currentIndex = STEPS.findIndex((x) => x.key === stage)
+                    const done = i < currentIndex
+                    const active = i === currentIndex
+                    return (
+                      <li
+                        key={s.key}
+                        className={`status-row ${active ? 'status-row--active' : ''} ${done ? 'status-row--done' : ''}`}
+                      >
+                        {s.label}
+                      </li>
+                    )
+                  })}
+                </ul>
+                {txHash && (
+                  <p className="hash-tag">
+                    tx {txHash} —{' '}
+                    <a href={`${BLOCKSCOUT_BASE}/tx/${txHash}`} target="_blank" rel="noreferrer">
+                      view
+                    </a>
+                  </p>
+                )}
               </div>
+            ) : (
+              <div>
+                <div className="ticket__meta">
+                  <span>Edition</span>
+                  <strong>{editionLabel}</strong>
+                </div>
+                <h2 className="ticket__title">Prepare Strike</h2>
 
-              <div className="field">
-                <label>Description</label>
-                <textarea
-                  placeholder="What makes this piece worth minting?"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  maxLength={400}
-                />
+                {stage === 'error' && errorMsg && <div className="error-box">{errorMsg}</div>}
+
+                <div className="field">
+                  <label>Artwork</label>
+                  <div className="dropzone">
+                    {preview ? (
+                      <img src={preview} alt="Selected artwork preview" className="dropzone__preview" />
+                    ) : (
+                      <p className="dropzone__hint">
+                        <strong>Click to upload</strong> or drag an image here
+                      </p>
+                    )}
+                    <input type="file" accept="image/*" onChange={handleFile} />
+                  </div>
+                </div>
+
+                <div className="field">
+                  <label>Name</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Obsidian Drift #001"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    maxLength={80}
+                  />
+                </div>
+
+                <div className="field">
+                  <label>Description</label>
+                  <textarea
+                    placeholder="What makes this piece worth minting?"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    maxLength={400}
+                  />
+                </div>
+
+                <button className="btn-press" onClick={handleMint} disabled={!canMint}>
+                  Strike the Mint
+                </button>
               </div>
-
-              <button className="btn-primary" onClick={handleMint} disabled={!canMint}>
-                Mint NFT
-              </button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         <footer className="foot">
