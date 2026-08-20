@@ -1,23 +1,15 @@
 import './SplitText.css'
 
 /**
- * Per-character reveal on mount, in the spirit of reactbits.dev's
- * "Text Animations" family (see https://reactbits.dev/text-animations/split-text).
- * Splits into <span> characters and staggers the entrance with CSS only.
+ * Renders text as if it were engraved into metal and catching a single
+ * pass of light: a soft bevel via layered text-shadow, plus one slow
+ * diagonal highlight sweep on mount. Same API as before (text/as/delay)
+ * so it drops in without touching App.jsx's usage.
  */
 export default function SplitText({ text, as: Tag = 'span', className = '', delay = 0 }) {
-  const chars = [...text]
   return (
-    <Tag className={`split-text ${className}`}>
-      {chars.map((ch, i) => (
-        <span
-          key={i}
-          className="split-text__char"
-          style={{ animationDelay: `${delay + i * 0.028}s` }}
-        >
-          {ch === ' ' ? '\u00A0' : ch}
-        </span>
-      ))}
+    <Tag className={`engrave ${className}`} style={{ animationDelay: `${delay}s` }}>
+      {text}
     </Tag>
   )
 }
