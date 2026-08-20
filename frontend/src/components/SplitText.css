@@ -1,25 +1,41 @@
-.split-text {
+.engrave {
+  position: relative;
   display: inline-block;
-}
-
-.split-text__char {
-  display: inline-block;
+  color: var(--ink);
   opacity: 0;
-  transform: translateY(0.6em) rotate(4deg);
-  animation: char-in 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: engrave-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  background-image: linear-gradient(
+    115deg,
+    var(--ink) 0%,
+    var(--ink) 42%,
+    var(--brass) 50%,
+    var(--ink) 58%,
+    var(--ink) 100%
+  );
+  background-size: 260% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: engrave-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards,
+    sweep 2.2s ease-out forwards;
 }
 
-@keyframes char-in {
-  to {
-    opacity: 1;
-    transform: translateY(0) rotate(0deg);
-  }
+@keyframes engrave-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes sweep {
+  0% { background-position: 140% 0; }
+  100% { background-position: -40% 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .split-text__char {
+  .engrave {
     animation: none;
     opacity: 1;
-    transform: none;
+    background: none;
+    -webkit-text-fill-color: var(--ink);
   }
 }
