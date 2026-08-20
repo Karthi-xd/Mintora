@@ -1,25 +1,24 @@
 import './Aurora.css'
 
 /**
- * Ambient drifting gradient backdrop, in the spirit of reactbits.dev's
- * "Backgrounds" family (see https://reactbits.dev/backgrounds/aurora).
- * Pure CSS + SVG filter, no canvas/WebGL — cheap enough to sit behind an
- * entire page without hurting scroll performance.
+ * Ambient backdrop built from layered conic/radial gradients that mimic
+ * guilloché engraving — the fine rosette pattern stamped into currency
+ * and coins as an anti-counterfeit measure. Slow counter-rotating layers
+ * give it a faint machine-turned shimmer instead of a generic blurred blob.
  */
 export default function Aurora() {
   return (
-    <div className="aurora" aria-hidden="true">
+    <div className="field-backdrop" aria-hidden="true">
       <svg width="0" height="0">
-        <filter id="aurora-grain">
-          <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch" />
+        <filter id="fb-grain">
+          <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" />
           <feColorMatrix type="saturate" values="0" />
         </filter>
       </svg>
-      <div className="aurora__blob aurora__blob--gold" />
-      <div className="aurora__blob aurora__blob--violet" />
-      <div className="aurora__blob aurora__blob--ember" />
-      <div className="aurora__grain" style={{ filter: 'url(#aurora-grain)' }} />
-      <div className="aurora__vignette" />
+      <div className="field-backdrop__rosette field-backdrop__rosette--a" />
+      <div className="field-backdrop__rosette field-backdrop__rosette--b" />
+      <div className="field-backdrop__grain" style={{ filter: 'url(#fb-grain)' }} />
+      <div className="field-backdrop__vignette" />
     </div>
   )
 }
