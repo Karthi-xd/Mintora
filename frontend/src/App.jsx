@@ -9,10 +9,10 @@ const SEPOLIA_CHAIN_ID_HEX = '0xaa36a7' // 11155111
 const BLOCKSCOUT_BASE = 'https://eth-sepolia.blockscout.com'
 
 const STEPS = [
-  { key: 'uploading-image', label: 'Pinning artwork to IPFS' },
-  { key: 'uploading-metadata', label: 'Pinning metadata to IPFS' },
+  { key: 'uploading-image', label: 'Casting artwork to IPFS' },
+  { key: 'uploading-metadata', label: 'Casting metadata to IPFS' },
   { key: 'awaiting-signature', label: 'Awaiting wallet signature' },
-  { key: 'pending', label: 'Striking on Sepolia' }
+  { key: 'pending', label: 'Forging on Sepolia' }
 ]
 
 function shortAddr(addr) {
@@ -204,18 +204,18 @@ export default function App() {
         <div className="hero">
           <span className="hero__eyebrow">On-chain · Sepolia testnet</span>
           <h1 className="hero__title">
-            <SplitText text="Strike your mark" as="span" />
+            <SplitText text="Forge your token" as="span" />
           </h1>
           <p className="hero__sub">
-            Upload artwork, pin it to IPFS, and press it into a token on Sepolia —
+            Upload artwork, anchor it to IPFS, and cast it into a token on Sepolia —
             straight from your browser wallet.
           </p>
         </div>
 
-        <div className="ticket-wrap">
-          <div className="ticket-perf" />
-          <div className="ticket">
-            <div className="seal">◆</div>
+        <div className="forge-wrap">
+          <div className="forge-frame">
+          <div className="forge-card">
+            <div className="forge-card__glyph"><span>◆</span></div>
 
             {!account || !chainOk ? (
               <div className="connect-block">
@@ -227,38 +227,38 @@ export default function App() {
                     : 'Wrong network — switch to Sepolia to continue.'}
                 </p>
                 {account && !chainOk ? (
-                  <button className="btn-press" onClick={switchToSepolia}>
+                  <button className="btn-cast" onClick={switchToSepolia}>
                     Switch to Sepolia
                   </button>
                 ) : (
-                  <button className="btn-press" onClick={connectWallet} disabled={connecting}>
+                  <button className="btn-cast" onClick={connectWallet} disabled={connecting}>
                     {connecting ? 'Connecting…' : 'Connect Wallet'}
                   </button>
                 )}
                 {connectError && <div className="error-box">{connectError}</div>}
               </div>
             ) : stage === 'confirmed' ? (
-              <div className="cert">
-                <div className="ticket__meta" style={{ justifyContent: 'center', marginTop: 6 }}>
-                  <span>Certificate of Mint</span>
+              <div className="proof">
+                <div className="forge-card__meta" style={{ justifyContent: 'center', marginTop: 6 }}>
+                  <span>Proof of Forge</span>
                 </div>
-                <div className="cert__seal">✓</div>
-                <h3>Struck &amp; Confirmed</h3>
+                <div className="proof__glyph">✓</div>
+                <h3>Forged &amp; Confirmed</h3>
                 <p>Edition {editionLabel} is live on Sepolia.</p>
-                <a className="cert-link" href={nftLink} target="_blank" rel="noreferrer">
+                <a className="proof-link" href={nftLink} target="_blank" rel="noreferrer">
                   View on Blockscout ↗
                 </a>
                 <button className="btn-ghost" onClick={resetForm}>
-                  Mint Another
+                  Forge Another
                 </button>
               </div>
             ) : stage !== 'idle' && stage !== 'error' ? (
               <div>
-                <div className="ticket__meta">
-                  <span>Minting</span>
+                <div className="forge-card__meta">
+                  <span>Forging</span>
                   <strong>{editionLabel}</strong>
                 </div>
-                <h2 className="ticket__title">In Progress</h2>
+                <h2 className="forge-card__title">In Progress</h2>
                 <ul className="status-list">
                   {STEPS.map((s, i) => {
                     const currentIndex = STEPS.findIndex((x) => x.key === stage)
@@ -285,11 +285,11 @@ export default function App() {
               </div>
             ) : (
               <div>
-                <div className="ticket__meta">
+                <div className="forge-card__meta">
                   <span>Edition</span>
                   <strong>{editionLabel}</strong>
                 </div>
-                <h2 className="ticket__title">Prepare Strike</h2>
+                <h2 className="forge-card__title">Ready the Forge</h2>
 
                 {stage === 'error' && errorMsg && <div className="error-box">{errorMsg}</div>}
 
@@ -328,11 +328,12 @@ export default function App() {
                   />
                 </div>
 
-                <button className="btn-press" onClick={handleMint} disabled={!canMint}>
-                  Strike the Mint
+                <button className="btn-cast" onClick={handleMint} disabled={!canMint}>
+                  Cast the Mint
                 </button>
               </div>
             )}
+          </div>
           </div>
         </div>
 
