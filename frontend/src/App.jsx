@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, useCallback } from 'react'
 import { BrowserProvider, Contract, Interface } from 'ethers'
-import Glow from './components/Glow.jsx'
+import Signal from './components/Signal.jsx'
 import SplitText from './components/SplitText.jsx'
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from './abi.js'
 import { uploadFileToIPFS, uploadJSONToIPFS } from './lib/ipfs.js'
@@ -9,10 +9,10 @@ const SEPOLIA_CHAIN_ID_HEX = '0xaa36a7' // 11155111
 const BLOCKSCOUT_BASE = 'https://eth-sepolia.blockscout.com'
 
 const STEPS = [
-  { key: 'uploading-image', label: 'agent.pin(artwork → ipfs)' },
-  { key: 'uploading-metadata', label: 'agent.pin(metadata → ipfs)' },
-  { key: 'awaiting-signature', label: 'agent.request(wallet.sign)' },
-  { key: 'pending', label: 'agent.await(sepolia.confirm)' }
+  { key: 'uploading-image', label: 'pinning artwork' },
+  { key: 'uploading-metadata', label: 'pinning metadata' },
+  { key: 'awaiting-signature', label: 'awaiting signature' },
+  { key: 'pending', label: 'confirming on-chain' }
 ]
 
 function shortAddr(addr) {
@@ -180,7 +180,7 @@ export default function App() {
 
   return (
     <>
-      <Glow />
+      <Signal />
       <div className="app">
         <header className="topbar">
           <div className="brand">
@@ -203,19 +203,15 @@ export default function App() {
         </header>
 
         <div className="hero">
-          <span className="hero__eyebrow">Agentic mint pipeline · Sepolia testnet</span>
+          <span className="hero__eyebrow">Sepolia testnet</span>
           <h1 className="hero__title">
-            <SplitText text="Direct the agent. It mints." as="span" className="glow-text" />
+            <SplitText text="Mint on-chain" as="span" className="glow-text" />
           </h1>
-          <p className="hero__sub">
-            Hand off an image and a name — the agent pins it to IPFS, builds the
-            metadata, and signs it into a token on-chain. You approve each step.
-          </p>
         </div>
 
         <div className="pipeline">
           <div className="scanframe-col">
-            <div className="scanframe-col__label">// node_01 · artwork input</div>
+            <div className="scanframe-col__label">Artwork</div>
             <div className={`scanframe ${isBusy ? 'scanframe--active' : ''}`}>
               <span className="scanframe__corner scanframe__corner--tl" />
               <span className="scanframe__corner scanframe__corner--tr" />
@@ -245,16 +241,16 @@ export default function App() {
             {!account || !chainOk ? (
               <div>
                 <div className="console__bar">
-                  <span>agent.session</span>
+                  <span>Status</span>
                   <strong>disconnected</strong>
                 </div>
-                <h2 className="console__title">Authorize the Agent</h2>
+                <h2 className="console__title">Connect</h2>
                 <p className="console__notice">
                   {!window.ethereum
-                    ? 'No wallet detected. Install MetaMask to continue.'
+                    ? 'No wallet detected.'
                     : !account
-                    ? 'Connect your wallet so the agent can sign transactions on your behalf.'
-                    : 'Wrong network — the agent only operates on Sepolia.'}
+                    ? 'Connect your wallet to continue.'
+                    : 'Wrong network — switch to Sepolia.'}
                 </p>
                 {account && !chainOk ? (
                   <button className="btn-run" onClick={switchToSepolia}>
@@ -270,26 +266,26 @@ export default function App() {
             ) : stage === 'confirmed' ? (
               <div className="cert">
                 <div className="console__bar">
-                  <span>agent.session</span>
+                  <span>Status</span>
                   <strong>complete</strong>
                 </div>
                 <div className="cert__seal">✓</div>
-                <h3>Pipeline Complete</h3>
-                <p>Edition {editionLabel} sealed on Sepolia.</p>
+                <h3>Minted</h3>
+                <p>Edition {editionLabel} on Sepolia.</p>
                 <a className="cert-link" href={nftLink} target="_blank" rel="noreferrer">
-                  View on Blockscout ↗
+                  View on Blockscout
                 </a>
                 <button className="btn-ghost" onClick={resetForm}>
-                  Run Again
+                  Mint Another
                 </button>
               </div>
             ) : isBusy ? (
               <div>
                 <div className="console__bar">
-                  <span>agent.session</span>
+                  <span>Status</span>
                   <strong>running</strong>
                 </div>
-                <h2 className="console__title">Executing Pipeline</h2>
+                <h2 className="console__title">Minting</h2>
                 <ul className="log">
                   {STEPS.map((s, i) => {
                     const currentIndex = STEPS.findIndex((x) => x.key === stage)
@@ -317,10 +313,10 @@ export default function App() {
             ) : (
               <div>
                 <div className="console__bar">
-                  <span>agent.session</span>
+                  <span>Status</span>
                   <strong>ready</strong>
                 </div>
-                <h2 className="console__title">Configure Mint</h2>
+                <h2 className="console__title">New Mint</h2>
 
                 {stage === 'error' && errorMsg && <div className="error-box">{errorMsg}</div>}
 
@@ -330,9 +326,7 @@ export default function App() {
                     {preview ? (
                       <p className="dropzone__hint"><strong>Loaded</strong> — click to replace</p>
                     ) : (
-                      <p className="dropzone__hint">
-                        <strong>Click to upload</strong> or drag an image here
-                      </p>
+                      <p className="dropzone__hint"><strong>Click to upload</strong></p>
                     )}
                     <input type="file" accept="image/*" onChange={handleFile} />
                   </div>
@@ -360,7 +354,7 @@ export default function App() {
                 </div>
 
                 <button className="btn-run" onClick={handleMint} disabled={!canMint}>
-                  Run Mint Pipeline
+                  Mint
                 </button>
               </div>
             )}
@@ -368,7 +362,7 @@ export default function App() {
         </div>
 
         <footer className="foot">
-          Contract {shortAddr(CONTRACT_ADDRESS)} on Sepolia · Images pinned via Pinata
+          {shortAddr(CONTRACT_ADDRESS)} · Sepolia
         </footer>
       </div>
     </>
