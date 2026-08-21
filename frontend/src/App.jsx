@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, useCallback } from 'react'
 import { BrowserProvider, Contract, Interface } from 'ethers'
-import Aurora from './components/Aurora.jsx'
+import Lattice from './components/Lattice.jsx'
 import SplitText from './components/SplitText.jsx'
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from './abi.js'
 import { uploadFileToIPFS, uploadJSONToIPFS } from './lib/ipfs.js'
@@ -9,10 +9,10 @@ const SEPOLIA_CHAIN_ID_HEX = '0xaa36a7' // 11155111
 const BLOCKSCOUT_BASE = 'https://eth-sepolia.blockscout.com'
 
 const STEPS = [
-  { key: 'uploading-image', label: 'Casting artwork to IPFS' },
-  { key: 'uploading-metadata', label: 'Casting metadata to IPFS' },
-  { key: 'awaiting-signature', label: 'Awaiting wallet signature' },
-  { key: 'pending', label: 'Forging on Sepolia' }
+  { key: 'uploading-image', label: 'agent.pin(artwork → ipfs)' },
+  { key: 'uploading-metadata', label: 'agent.pin(metadata → ipfs)' },
+  { key: 'awaiting-signature', label: 'agent.request(wallet.sign)' },
+  { key: 'pending', label: 'agent.await(sepolia.confirm)' }
 ]
 
 function shortAddr(addr) {
@@ -112,6 +112,7 @@ export default function App() {
   }
 
   const canMint = account && chainOk && file && name.trim() && stage === 'idle'
+  const isBusy = stage !== 'idle' && stage !== 'error' && stage !== 'confirmed'
 
   async function handleMint() {
     setErrorMsg('')
@@ -175,11 +176,11 @@ export default function App() {
     ? `${BLOCKSCOUT_BASE}/token/${CONTRACT_ADDRESS}/instance/${tokenId}`
     : `${BLOCKSCOUT_BASE}/tx/${txHash}`
 
-  const editionLabel = tokenId ? `No. ${tokenId.padStart(4, '0')}` : 'No. ————'
+  const editionLabel = tokenId ? `#${tokenId.padStart(4, '0')}` : '#————'
 
   return (
     <>
-      <Aurora />
+      <Lattice />
       <div className="app">
         <header className="topbar">
           <div className="brand">
@@ -202,64 +203,94 @@ export default function App() {
         </header>
 
         <div className="hero">
-          <span className="hero__eyebrow">On-chain · Sepolia testnet</span>
+          <span className="hero__eyebrow">Agentic mint pipeline · Sepolia testnet</span>
           <h1 className="hero__title">
-            <SplitText text="Forge your token" as="span" />
+            <SplitText text="Direct the agent. It mints." as="span" className="glow-text" />
           </h1>
           <p className="hero__sub">
-            Upload artwork, anchor it to IPFS, and cast it into a token on Sepolia —
-            straight from your browser wallet.
+            Hand off an image and a name — the agent pins it to IPFS, builds the
+            metadata, and signs it into a token on-chain. You approve each step.
           </p>
         </div>
 
-        <div className="forge-wrap">
-          <div className="forge-frame">
-          <div className="forge-card">
-            <div className="forge-card__glyph"><span>◆</span></div>
+        <div className="pipeline">
+          <div className="scanframe-col">
+            <div className="scanframe-col__label">// node_01 · artwork input</div>
+            <div className={`scanframe ${isBusy ? 'scanframe--active' : ''}`}>
+              <span className="scanframe__corner scanframe__corner--tl" />
+              <span className="scanframe__corner scanframe__corner--tr" />
+              <span className="scanframe__corner scanframe__corner--bl" />
+              <span className="scanframe__corner scanframe__corner--br" />
+              {preview ? (
+                <img src={preview} alt="Artwork preview" className="scanframe__img" />
+              ) : (
+                <div className="scanframe__placeholder">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4">
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                    <path d="M21 15l-5-5-11 11" />
+                  </svg>
+                  <span>Awaiting input</span>
+                </div>
+              )}
+              <span className="scanframe__tag">{editionLabel}</span>
+            </div>
+            <div className="scanframe-col__meta">
+              <span>status</span>
+              <strong>{isBusy ? 'processing' : stage === 'confirmed' ? 'sealed' : 'idle'}</strong>
+            </div>
+          </div>
 
+          <div className="console">
             {!account || !chainOk ? (
-              <div className="connect-block">
-                <p style={{ marginTop: 8 }}>
+              <div>
+                <div className="console__bar">
+                  <span>agent.session</span>
+                  <strong>disconnected</strong>
+                </div>
+                <h2 className="console__title">Authorize the Agent</h2>
+                <p className="console__notice">
                   {!window.ethereum
                     ? 'No wallet detected. Install MetaMask to continue.'
                     : !account
-                    ? 'Connect your wallet to begin the mint.'
-                    : 'Wrong network — switch to Sepolia to continue.'}
+                    ? 'Connect your wallet so the agent can sign transactions on your behalf.'
+                    : 'Wrong network — the agent only operates on Sepolia.'}
                 </p>
                 {account && !chainOk ? (
-                  <button className="btn-cast" onClick={switchToSepolia}>
+                  <button className="btn-run" onClick={switchToSepolia}>
                     Switch to Sepolia
                   </button>
                 ) : (
-                  <button className="btn-cast" onClick={connectWallet} disabled={connecting}>
+                  <button className="btn-run" onClick={connectWallet} disabled={connecting}>
                     {connecting ? 'Connecting…' : 'Connect Wallet'}
                   </button>
                 )}
-                {connectError && <div className="error-box">{connectError}</div>}
+                {connectError && <div className="error-box" style={{ marginTop: 14 }}>{connectError}</div>}
               </div>
             ) : stage === 'confirmed' ? (
-              <div className="proof">
-                <div className="forge-card__meta" style={{ justifyContent: 'center', marginTop: 6 }}>
-                  <span>Proof of Forge</span>
+              <div className="cert">
+                <div className="console__bar">
+                  <span>agent.session</span>
+                  <strong>complete</strong>
                 </div>
-                <div className="proof__glyph">✓</div>
-                <h3>Forged &amp; Confirmed</h3>
-                <p>Edition {editionLabel} is live on Sepolia.</p>
-                <a className="proof-link" href={nftLink} target="_blank" rel="noreferrer">
+                <div className="cert__seal">✓</div>
+                <h3>Pipeline Complete</h3>
+                <p>Edition {editionLabel} sealed on Sepolia.</p>
+                <a className="cert-link" href={nftLink} target="_blank" rel="noreferrer">
                   View on Blockscout ↗
                 </a>
                 <button className="btn-ghost" onClick={resetForm}>
-                  Forge Another
+                  Run Again
                 </button>
               </div>
-            ) : stage !== 'idle' && stage !== 'error' ? (
+            ) : isBusy ? (
               <div>
-                <div className="forge-card__meta">
-                  <span>Forging</span>
-                  <strong>{editionLabel}</strong>
+                <div className="console__bar">
+                  <span>agent.session</span>
+                  <strong>running</strong>
                 </div>
-                <h2 className="forge-card__title">In Progress</h2>
-                <ul className="status-list">
+                <h2 className="console__title">Executing Pipeline</h2>
+                <ul className="log">
                   {STEPS.map((s, i) => {
                     const currentIndex = STEPS.findIndex((x) => x.key === stage)
                     const done = i < currentIndex
@@ -267,7 +298,7 @@ export default function App() {
                     return (
                       <li
                         key={s.key}
-                        className={`status-row ${active ? 'status-row--active' : ''} ${done ? 'status-row--done' : ''}`}
+                        className={`log__row ${active ? 'log__row--active' : ''} ${done ? 'log__row--done' : ''}`}
                       >
                         {s.label}
                       </li>
@@ -285,19 +316,19 @@ export default function App() {
               </div>
             ) : (
               <div>
-                <div className="forge-card__meta">
-                  <span>Edition</span>
-                  <strong>{editionLabel}</strong>
+                <div className="console__bar">
+                  <span>agent.session</span>
+                  <strong>ready</strong>
                 </div>
-                <h2 className="forge-card__title">Ready the Forge</h2>
+                <h2 className="console__title">Configure Mint</h2>
 
                 {stage === 'error' && errorMsg && <div className="error-box">{errorMsg}</div>}
 
                 <div className="field">
-                  <label>Artwork</label>
+                  <label>artwork</label>
                   <div className="dropzone">
                     {preview ? (
-                      <img src={preview} alt="Selected artwork preview" className="dropzone__preview" />
+                      <p className="dropzone__hint"><strong>Loaded</strong> — click to replace</p>
                     ) : (
                       <p className="dropzone__hint">
                         <strong>Click to upload</strong> or drag an image here
@@ -308,7 +339,7 @@ export default function App() {
                 </div>
 
                 <div className="field">
-                  <label>Name</label>
+                  <label>name</label>
                   <input
                     type="text"
                     placeholder="e.g. Obsidian Drift #001"
@@ -319,7 +350,7 @@ export default function App() {
                 </div>
 
                 <div className="field">
-                  <label>Description</label>
+                  <label>description</label>
                   <textarea
                     placeholder="What makes this piece worth minting?"
                     value={description}
@@ -328,12 +359,11 @@ export default function App() {
                   />
                 </div>
 
-                <button className="btn-cast" onClick={handleMint} disabled={!canMint}>
-                  Cast the Mint
+                <button className="btn-run" onClick={handleMint} disabled={!canMint}>
+                  Run Mint Pipeline
                 </button>
               </div>
             )}
-          </div>
           </div>
         </div>
 
