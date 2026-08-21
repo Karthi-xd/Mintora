@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, useCallback } from 'react'
 import { BrowserProvider, Contract, Interface } from 'ethers'
-import Lattice from './components/Lattice.jsx'
+import Glow from './components/Glow.jsx'
 import SplitText from './components/SplitText.jsx'
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from './abi.js'
 import { uploadFileToIPFS, uploadJSONToIPFS } from './lib/ipfs.js'
@@ -180,7 +180,7 @@ export default function App() {
 
   return (
     <>
-      <Lattice />
+      <Glow />
       <div className="app">
         <header className="topbar">
           <div className="brand">

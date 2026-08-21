@@ -1,7 +1,7 @@
 /* ============================================================
    Mintora — Agentic mint pipeline
    Palette: near-black, cyan/violet signal accents, mono readouts
-   Type: Chakra Petch (display) · Inter (body) · JetBrains Mono (data)
+   Type: Space Grotesk (display) · Manrope (body) · IBM Plex Mono (data, used sparingly)
    ============================================================ */
 
 :root {
@@ -22,9 +22,9 @@
   --ink-dim: #9296a8;
   --ink-faint: #565a68;
 
-  --font-display: 'Chakra Petch', sans-serif;
-  --font-body: 'Inter', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Manrope', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
 }
 
 * { box-sizing: border-box; }
@@ -57,56 +57,71 @@ a { color: var(--cyan); }
   padding: 26px 24px 60px;
 }
 
-/* ---------- ambient lattice background ---------- */
+/* ---------- ambient glow background ---------- */
 
-.lattice {
+.glow {
   position: fixed;
   inset: 0;
   z-index: 0;
   overflow: hidden;
-  background:
-    radial-gradient(ellipse 60% 40% at 50% 0%, rgba(110, 231, 249, 0.06), transparent 60%),
-    radial-gradient(ellipse 50% 40% at 100% 100%, rgba(167, 139, 250, 0.05), transparent 60%),
-    var(--bg);
+  background: var(--bg);
 }
 
-.lattice__grid {
+.glow__orb {
   position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
-  background-size: 42px 42px;
-  mask-image: radial-gradient(ellipse 70% 70% at 50% 30%, black 30%, transparent 75%);
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.5;
+  will-change: transform;
 }
 
-.lattice__nodes {
+.glow__orb--cyan {
+  width: 560px;
+  height: 560px;
+  top: -180px;
+  left: -120px;
+  background: radial-gradient(circle, rgba(110, 231, 249, 0.22), transparent 70%);
+  animation: orb-drift-a 26s ease-in-out infinite;
+}
+
+.glow__orb--violet {
+  width: 520px;
+  height: 520px;
+  bottom: -200px;
+  right: -140px;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.18), transparent 70%);
+  animation: orb-drift-b 32s ease-in-out infinite;
+}
+
+.glow__orb--dim {
+  width: 420px;
+  height: 420px;
+  top: 40%;
+  left: 55%;
+  background: radial-gradient(circle, rgba(110, 231, 249, 0.08), transparent 70%);
+  animation: orb-drift-a 40s ease-in-out infinite reverse;
+}
+
+@keyframes orb-drift-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(40px, 30px) scale(1.08); }
+}
+
+@keyframes orb-drift-b {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-30px, -40px) scale(1.06); }
+}
+
+.glow__grain {
   position: absolute;
-  inset: 0;
-  animation: drift 60s linear infinite alternate;
-}
-
-@keyframes drift {
-  from { transform: translate(0, 0); }
-  to { transform: translate(-24px, 16px); }
-}
-
-.lattice__scan {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 120px;
-  background: linear-gradient(180deg, transparent, rgba(110, 231, 249, 0.045), transparent);
-  animation: scan 9s ease-in-out infinite;
-}
-
-@keyframes scan {
-  0% { top: -120px; }
-  100% { top: 100%; }
+  inset: -20%;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .lattice__nodes, .lattice__scan { animation: none; }
+  .glow__orb { animation: none; }
 }
 
 /* ---------- header ---------- */
@@ -263,7 +278,7 @@ a { color: var(--cyan); }
   gap: 1px;
   background: var(--line);
   border: 1px solid var(--line-bright);
-  border-radius: 6px;
+  border-radius: 14px;
   overflow: hidden;
 }
 
@@ -282,9 +297,10 @@ a { color: var(--cyan); }
 }
 
 .scanframe-col__label {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.14em;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ink-faint);
   margin-bottom: 14px;
@@ -294,6 +310,7 @@ a { color: var(--cyan); }
   position: relative;
   aspect-ratio: 1;
   border: 1px solid var(--line-bright);
+  border-radius: 12px;
   background: var(--panel-raised);
   display: flex;
   align-items: center;
@@ -334,10 +351,10 @@ a { color: var(--cyan); }
 }
 
 .scanframe__placeholder span {
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.02em;
 }
 
 .scanframe__tag {
@@ -371,10 +388,10 @@ a { color: var(--cyan); }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.02em;
   color: var(--ink-faint);
   border-bottom: 1px solid var(--line);
   padding-bottom: 12px;
@@ -383,7 +400,7 @@ a { color: var(--cyan); }
 
 .console__bar strong {
   color: var(--violet);
-  font-weight: 400;
+  font-weight: 600;
 }
 
 .console__title {
@@ -397,28 +414,24 @@ a { color: var(--cyan); }
 .field { margin-bottom: 16px; }
 
 .field label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
+  display: block;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.01em;
+  color: var(--ink-dim);
   margin-bottom: 8px;
 }
-
-.field label::before { content: '›'; color: var(--cyan); }
 
 .field input[type='text'],
 .field textarea {
   width: 100%;
   background: var(--bg);
   border: 1px solid var(--line-bright);
-  border-radius: 3px;
+  border-radius: 6px;
   color: var(--ink);
-  font-family: var(--font-mono);
-  font-size: 13.5px;
+  font-family: var(--font-body);
+  font-size: 14.5px;
   padding: 11px 13px;
   resize: vertical;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
@@ -439,7 +452,7 @@ a { color: var(--cyan); }
 .dropzone {
   position: relative;
   border: 1px dashed var(--line-bright);
-  border-radius: 3px;
+  border-radius: 8px;
   padding: 20px;
   text-align: center;
   background: var(--bg);
@@ -457,9 +470,9 @@ a { color: var(--cyan); }
 
 .dropzone__hint {
   margin: 0;
-  font-size: 13px;
+  font-size: 13.5px;
   color: var(--ink-dim);
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
 }
 
 .dropzone__hint strong { color: var(--cyan); }
@@ -469,12 +482,11 @@ a { color: var(--cyan); }
   background: var(--cyan);
   color: #05060a;
   border: none;
-  border-radius: 3px;
-  font-family: var(--font-mono);
+  border-radius: 8px;
+  font-family: var(--font-body);
   font-weight: 700;
-  font-size: 12.5px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-size: 14px;
+  letter-spacing: 0.01em;
   padding: 14px 20px;
   margin-top: 4px;
   transition: transform 0.08s ease, box-shadow 0.15s ease, background 0.15s ease;
@@ -497,12 +509,11 @@ a { color: var(--cyan); }
   background: transparent;
   border: 1px solid var(--line-bright);
   color: var(--ink-dim);
-  border-radius: 3px;
+  border-radius: 8px;
   padding: 11px 20px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 13.5px;
   transition: border-color 0.15s ease, color 0.15s ease;
 }
 
@@ -534,7 +545,7 @@ a { color: var(--cyan); }
   padding: 14px 16px;
   background: var(--bg);
   border: 1px solid var(--line);
-  border-radius: 3px;
+  border-radius: 10px;
   font-family: var(--font-mono);
   font-size: 12.5px;
   display: flex;
