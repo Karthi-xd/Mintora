@@ -1,14 +1,35 @@
-import './SplitText.css'
+.molten-text {
+  display: inline-block;
+  background: linear-gradient(100deg, var(--ink) 0%, var(--ember) 30%, var(--magenta) 55%, var(--cyan) 75%, var(--ink) 100%);
+  background-size: 260% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  opacity: 0;
+  animation: molten-pour 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
 
-/**
- * Renders headline text with a molten gradient fill (ember → magenta → cyan)
- * that sweeps across on mount, as if the letters were just poured. Same API
- * as before (text/as/delay) so it drops in without touching App.jsx's usage.
- */
-export default function SplitText({ text, as: Tag = 'span', className = '', delay = 0 }) {
-  return (
-    <Tag className={`molten-text ${className}`} style={{ animationDelay: `${delay}s` }}>
-      {text}
-    </Tag>
-  )
+@keyframes molten-pour {
+  0% {
+    opacity: 0;
+    background-position: 100% 0;
+    filter: brightness(1.6);
+  }
+  12% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    background-position: 0% 0;
+    filter: brightness(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .molten-text {
+    animation: none;
+    opacity: 1;
+    background-position: 0% 0;
+  }
 }
