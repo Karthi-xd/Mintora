@@ -1,68 +1,72 @@
-.field-backdrop {
+.forge-backdrop {
   position: fixed;
   inset: 0;
   z-index: 0;
   overflow: hidden;
-  background: var(--bg);
-  pointer-events: none;
+  background: var(--void);
 }
 
-.field-backdrop__rosette {
+.forge-backdrop__core {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 160vmax;
-  height: 160vmax;
+  width: min(70vw, 900px);
+  height: min(70vw, 900px);
   transform: translate(-50%, -50%);
+  background: conic-gradient(
+    from 0deg,
+    rgba(255, 90, 54, 0.32),
+    rgba(184, 41, 224, 0.28),
+    rgba(45, 212, 255, 0.22),
+    rgba(255, 90, 54, 0.32)
+  );
+  filter: blur(120px);
+  opacity: 0.55;
+  animation: core-spin 26s linear infinite;
   will-change: transform;
 }
 
-.field-backdrop__rosette--a {
-  background:
-    repeating-conic-gradient(
-      from 0deg,
-      transparent 0deg 1.6deg,
-      rgba(184, 115, 59, 0.05) 1.6deg 1.9deg
-    );
-  animation: spin-cw 220s linear infinite;
+.forge-backdrop__core--b {
+  width: min(38vw, 480px);
+  height: min(38vw, 480px);
+  filter: blur(90px);
+  opacity: 0.5;
+  animation: core-spin 18s linear infinite reverse, core-pulse 7s ease-in-out infinite;
 }
 
-.field-backdrop__rosette--b {
-  width: 130vmax;
-  height: 130vmax;
-  background:
-    repeating-radial-gradient(
-      circle at center,
-      transparent 0px 34px,
-      rgba(92, 156, 134, 0.05) 34px 35px
-    );
-  animation: spin-ccw 260s linear infinite;
-  mix-blend-mode: screen;
-}
-
-.field-backdrop__grain {
-  position: absolute;
-  inset: 0;
-  opacity: 0.04;
-  mix-blend-mode: overlay;
-}
-
-.field-backdrop__vignette {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 70% 55% at 50% 38%, transparent 0%, var(--bg) 82%),
-    linear-gradient(180deg, rgba(0, 0, 0, 0.25), transparent 20%, transparent 75%, rgba(0, 0, 0, 0.4));
-}
-
-@keyframes spin-cw {
+@keyframes core-spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
   to { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
-@keyframes spin-ccw {
-  to { transform: translate(-50%, -50%) rotate(-360deg); }
+@keyframes core-pulse {
+  0%, 100% { opacity: 0.38; }
+  50% { opacity: 0.62; }
+}
+
+.forge-backdrop__mesh {
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: screen;
+}
+
+.forge-backdrop__grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.forge-backdrop__vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 38%, transparent 0%, transparent 32%, rgba(4, 4, 7, 0.65) 78%, var(--void) 100%);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .field-backdrop__rosette { animation: none; }
+  .forge-backdrop__core,
+  .forge-backdrop__core--b {
+    animation: none;
+  }
 }
