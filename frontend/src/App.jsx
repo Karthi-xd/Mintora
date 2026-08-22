@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState, useCallback } from 'react'
 import { BrowserProvider, Contract, Interface } from 'ethers'
 import Signal from './components/Signal.jsx'
-import SplitText from './components/SplitText.jsx'
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from './abi.js'
 import { uploadFileToIPFS, uploadJSONToIPFS } from './lib/ipfs.js'
 
@@ -204,8 +203,8 @@ export default function App() {
 
         <div className="hero">
           <span className="hero__eyebrow">Sepolia testnet</span>
-          <h1 className="hero__title">
-            <SplitText text="Mint on-chain" as="span" className="glow-text" />
+          <h1 className="hero__title glow-text">
+            MINT <em>on-chain</em>
           </h1>
         </div>
 
