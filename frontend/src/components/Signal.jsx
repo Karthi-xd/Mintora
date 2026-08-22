@@ -1,12 +1,14 @@
-// Flat, restrained background: a faint dot grid on black, grain, and a
-// single thin scanline sweep in the accent color. No gradients, no
-// glow blobs — deliberately structural rather than soft/atmospheric.
+// Flat, graphic background: a single large rotated square outline (like
+// a stamp or seal) sitting off-canvas behind the content, plus grain.
+// No grid lines, no scanline sweep, no soft glow — a static poster-style
+// backdrop instead.
 
 export default function Signal() {
   return (
     <div className="signal" aria-hidden="true">
-      <div className="signal__grid" />
-      <div className="signal__scan" />
+      <svg className="signal__shape" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
+        <rect x="15" y="15" width="70" height="70" transform="rotate(8 50 50)" />
+      </svg>
       <div className="signal__grain" />
     </div>
   )
