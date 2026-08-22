@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from 'react'
 import { BrowserProvider, Contract, Interface } from 'ethers'
-import Signal from './components/Signal.jsx'
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from './abi.js'
 import { uploadFileToIPFS, uploadJSONToIPFS } from './lib/ipfs.js'
 
@@ -8,10 +7,10 @@ const SEPOLIA_CHAIN_ID_HEX = '0xaa36a7' // 11155111
 const BLOCKSCOUT_BASE = 'https://eth-sepolia.blockscout.com'
 
 const STEPS = [
-  { key: 'uploading-image', label: 'pinning artwork' },
-  { key: 'uploading-metadata', label: 'pinning metadata' },
-  { key: 'awaiting-signature', label: 'awaiting signature' },
-  { key: 'pending', label: 'confirming on-chain' }
+  { key: 'uploading-image', label: 'Uploading artwork' },
+  { key: 'uploading-metadata', label: 'Preparing metadata' },
+  { key: 'awaiting-signature', label: 'Confirm in wallet' },
+  { key: 'pending', label: 'Minting on Sepolia' }
 ]
 
 function shortAddr(addr) {
@@ -179,7 +178,6 @@ export default function App() {
 
   return (
     <>
-      <Signal />
       <div className="app">
         <header className="topbar">
           <div className="brand">
@@ -204,52 +202,44 @@ export default function App() {
         <div className="hero">
           <span className="hero__eyebrow">Sepolia testnet</span>
           <h1 className="hero__title glow-text">
-            MINT <em>on-chain</em>
+            Mint your <em>NFT</em>
           </h1>
         </div>
 
         <div className="pipeline">
           <div className="scanframe-col">
-            <div className="scanframe-col__label">Artwork</div>
+            <div className="scanframe-col__label">Preview</div>
             <div className={`scanframe ${isBusy ? 'scanframe--active' : ''}`}>
-              <span className="scanframe__corner scanframe__corner--tl" />
-              <span className="scanframe__corner scanframe__corner--tr" />
-              <span className="scanframe__corner scanframe__corner--bl" />
-              <span className="scanframe__corner scanframe__corner--br" />
               {preview ? (
                 <img src={preview} alt="Artwork preview" className="scanframe__img" />
               ) : (
                 <div className="scanframe__placeholder">
                   <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4">
-                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <rect x="3" y="3" width="18" height="18" rx="3" />
                     <circle cx="8.5" cy="8.5" r="1.5" />
                     <path d="M21 15l-5-5-11 11" />
                   </svg>
-                  <span>Awaiting input</span>
+                  <span>No image yet</span>
                 </div>
               )}
               <span className="scanframe__tag">{editionLabel}</span>
             </div>
             <div className="scanframe-col__meta">
-              <span>status</span>
-              <strong>{isBusy ? 'processing' : stage === 'confirmed' ? 'sealed' : 'idle'}</strong>
+              <span>Status</span>
+              <strong>{isBusy ? 'Minting' : stage === 'confirmed' ? 'Minted' : 'Draft'}</strong>
             </div>
           </div>
 
           <div className="console">
             {!account || !chainOk ? (
               <div>
-                <div className="console__bar">
-                  <span>Status</span>
-                  <strong>disconnected</strong>
-                </div>
-                <h2 className="console__title">Connect</h2>
+                <h2 className="console__title">Connect your wallet</h2>
                 <p className="console__notice">
                   {!window.ethereum
-                    ? 'No wallet detected.'
+                    ? 'No wallet detected — install MetaMask to continue.'
                     : !account
-                    ? 'Connect your wallet to continue.'
-                    : 'Wrong network — switch to Sepolia.'}
+                    ? 'Connect the wallet you want to mint to.'
+                    : 'Wrong network — this app mints on Sepolia.'}
                 </p>
                 {account && !chainOk ? (
                   <button className="btn-run" onClick={switchToSepolia}>
@@ -264,15 +254,11 @@ export default function App() {
               </div>
             ) : stage === 'confirmed' ? (
               <div className="cert">
-                <div className="console__bar">
-                  <span>Status</span>
-                  <strong>complete</strong>
-                </div>
                 <div className="cert__seal">✓</div>
-                <h3>Minted</h3>
-                <p>Edition {editionLabel} on Sepolia.</p>
+                <h3>Mint successful</h3>
+                <p>Edition {editionLabel} is now in your wallet on Sepolia.</p>
                 <a className="cert-link" href={nftLink} target="_blank" rel="noreferrer">
-                  View on Blockscout
+                  View on Blockscout →
                 </a>
                 <button className="btn-ghost" onClick={resetForm}>
                   Mint Another
@@ -280,11 +266,7 @@ export default function App() {
               </div>
             ) : isBusy ? (
               <div>
-                <div className="console__bar">
-                  <span>Status</span>
-                  <strong>running</strong>
-                </div>
-                <h2 className="console__title">Minting</h2>
+                <h2 className="console__title">Minting…</h2>
                 <ul className="log">
                   {STEPS.map((s, i) => {
                     const currentIndex = STEPS.findIndex((x) => x.key === stage)
@@ -311,16 +293,12 @@ export default function App() {
               </div>
             ) : (
               <div>
-                <div className="console__bar">
-                  <span>Status</span>
-                  <strong>ready</strong>
-                </div>
-                <h2 className="console__title">New Mint</h2>
+                <h2 className="console__title">Mint details</h2>
 
                 {stage === 'error' && errorMsg && <div className="error-box">{errorMsg}</div>}
 
                 <div className="field">
-                  <label>artwork</label>
+                  <label>Artwork</label>
                   <div className="dropzone">
                     {preview ? (
                       <div className="dropzone__filled">
@@ -335,7 +313,7 @@ export default function App() {
                 </div>
 
                 <div className="field">
-                  <label>name</label>
+                  <label>Name</label>
                   <input
                     type="text"
                     placeholder="e.g. Obsidian Drift #001"
@@ -346,7 +324,7 @@ export default function App() {
                 </div>
 
                 <div className="field">
-                  <label>description</label>
+                  <label>Description</label>
                   <textarea
                     placeholder="What makes this piece worth minting?"
                     value={description}
@@ -356,7 +334,7 @@ export default function App() {
                 </div>
 
                 <button className="btn-run" onClick={handleMint} disabled={!canMint}>
-                  Mint
+                  Mint NFT
                 </button>
               </div>
             )}
@@ -364,7 +342,7 @@ export default function App() {
         </div>
 
         <footer className="foot">
-          {shortAddr(CONTRACT_ADDRESS)} · Sepolia
+          {shortAddr(CONTRACT_ADDRESS)} · Sepolia testnet
         </footer>
       </div>
     </>
