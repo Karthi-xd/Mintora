@@ -8,19 +8,19 @@
   --canvas: #0a0a0c;
   --canvas-line: #1c1c20;
 
-  --card: #f7f6f3;
-  --card-raised: #ffffff;
-  --card-line: #e4e2dc;
-  --card-line-strong: #d3d0c8;
+  --card: rgba(255, 255, 255, 0.055);
+  --card-raised: rgba(255, 255, 255, 0.075);
+  --card-line: rgba(255, 255, 255, 0.1);
+  --card-line-strong: rgba(255, 255, 255, 0.18);
 
   --accent: #ff2e7e;
   --accent-dark: #d81f68;
-  --ok: #16a34a;
-  --danger: #e11d48;
+  --ok: #22c55e;
+  --danger: #f87171;
 
-  --ink: #141414;
-  --ink-dim: #6b6a66;
-  --ink-faint: #a5a29a;
+  --ink: #f6f5f2;
+  --ink-dim: #b6b4af;
+  --ink-faint: #7c7a75;
 
   --on-canvas: #f2f1ee;
   --on-canvas-dim: #85848a;
@@ -35,7 +35,11 @@ html, body, #root { height: 100%; }
 
 body {
   margin: 0;
-  background: var(--canvas);
+  background:
+    radial-gradient(ellipse 60% 45% at 30% 15%, rgba(255, 46, 126, 0.12), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 85%, rgba(255, 46, 126, 0.06), transparent 60%),
+    var(--canvas);
+  background-attachment: fixed;
   color: var(--on-canvas);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
@@ -175,9 +179,12 @@ a { color: var(--accent); }
   grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
   gap: 0;
   background: var(--card);
+  backdrop-filter: blur(28px) saturate(140%);
+  -webkit-backdrop-filter: blur(28px) saturate(140%);
+  border: 1px solid var(--card-line-strong);
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 @media (max-width: 760px) {
@@ -190,7 +197,7 @@ a { color: var(--accent); }
   padding: 28px;
   display: flex;
   flex-direction: column;
-  background: var(--card-raised);
+  background: transparent;
   border-right: 1px solid var(--card-line);
 }
 
@@ -252,11 +259,12 @@ a { color: var(--accent); }
   right: 12px;
   font-family: var(--font-mono);
   font-size: 10px;
-  color: var(--ink-faint);
-  background: var(--card-raised);
+  color: var(--ink-dim);
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(6px);
   padding: 2px 7px;
   border-radius: 5px;
-  border: 1px solid var(--card-line);
+  border: 1px solid var(--card-line-strong);
 }
 
 .scanframe-col__meta {
@@ -275,7 +283,7 @@ a { color: var(--accent); }
 
 .console {
   padding: 28px;
-  background: var(--card);
+  background: transparent;
 }
 
 .console > div, .console > .cert {
@@ -476,9 +484,9 @@ a { color: var(--accent); }
 .btn-ghost:hover { border-color: var(--ink-dim); color: var(--ink); }
 
 .error-box {
-  background: #fde8ec;
-  border: 1px solid #f7c3d0;
-  color: #b81942;
+  background: rgba(248, 113, 113, 0.14);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  color: #ffb4b4;
   font-size: 13px;
   padding: 11px 14px;
   border-radius: 10px;
