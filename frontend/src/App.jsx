@@ -256,7 +256,7 @@ export default function App() {
                     Switch to Sepolia
                   </button>
                 ) : (
-                  <button className="btn-run" onClick={connectWallet} disabled={connecting}>
+                  <button className={`btn-run ${connecting ? 'btn-run--loading' : ''}`} onClick={connectWallet} disabled={connecting}>
                     {connecting ? 'Connecting…' : 'Connect Wallet'}
                   </button>
                 )}
@@ -323,9 +323,12 @@ export default function App() {
                   <label>artwork</label>
                   <div className="dropzone">
                     {preview ? (
-                      <p className="dropzone__hint"><strong>Loaded</strong> — click to replace</p>
+                      <div className="dropzone__filled">
+                        <img src={preview} alt="" className="dropzone__thumb" />
+                        <p className="dropzone__hint"><strong>{file?.name || 'Image selected'}</strong><br />Click to replace</p>
+                      </div>
                     ) : (
-                      <p className="dropzone__hint"><strong>Click to upload</strong></p>
+                      <p className="dropzone__hint"><strong>Click to upload</strong> or drop an image</p>
                     )}
                     <input type="file" accept="image/*" onChange={handleFile} />
                   </div>
