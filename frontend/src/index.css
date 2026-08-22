@@ -1,24 +1,27 @@
 /* ============================================================
    Mintora — Sepolia mint
-   Palette: black / white / acid lime (single accent, no gradients)
-   Type: Unbounded (display) · Inter (body) · Space Mono (data)
+   Palette: black / white / warm signal orange (single accent)
+   Type: Syne (display, bold) · Instrument Serif italic (accent word)
+         · Inter (body) · Space Mono (data)
    ============================================================ */
 
 :root {
-  --bg: #050505;
-  --panel: #0d0d0d;
-  --panel-raised: #131313;
-  --line: #232323;
-  --line-bright: #343434;
+  --bg: #070605;
+  --panel: #0f0e0c;
+  --panel-raised: #161412;
+  --line: #262421;
+  --line-bright: #3a3733;
 
-  --accent: #c6ff3d;
+  --accent: #ff5a1f;
+  --accent-soft: #ffb088;
   --danger: #ff5c5c;
 
-  --ink: #f2f2f0;
-  --ink-dim: #8f8f8a;
-  --ink-faint: #4d4d49;
+  --ink: #f5f2ec;
+  --ink-dim: #96918a;
+  --ink-faint: #524e48;
 
-  --font-display: 'Unbounded', sans-serif;
+  --font-display: 'Syne', sans-serif;
+  --font-accent: 'Instrument Serif', serif;
   --font-body: 'Inter', sans-serif;
   --font-mono: 'Space Mono', monospace;
 }
@@ -53,7 +56,7 @@ a { color: var(--accent); }
   padding: 24px 24px 56px;
 }
 
-/* ---------- flat background ---------- */
+/* ---------- flat graphic background ---------- */
 
 .signal {
   position: fixed;
@@ -63,44 +66,27 @@ a { color: var(--accent); }
   background: var(--bg);
 }
 
-.signal__grid {
+.signal__shape {
   position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: radial-gradient(ellipse 65% 55% at 50% 20%, black 20%, transparent 70%);
+  top: -10%;
+  right: -18%;
+  width: 70%;
+  height: 120%;
+  opacity: 1;
 }
 
-.signal__scan {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: var(--accent);
-  opacity: 0.25;
-  box-shadow: 0 0 12px 1px var(--accent);
-  animation: sweep 7s linear infinite;
-}
-
-@keyframes sweep {
-  0% { top: 0%; opacity: 0; }
-  8% { opacity: 0.25; }
-  92% { opacity: 0.25; }
-  100% { top: 100%; opacity: 0; }
+.signal__shape rect {
+  fill: none;
+  stroke: rgba(255, 90, 31, 0.16);
+  stroke-width: 0.6;
 }
 
 .signal__grain {
   position: absolute;
   inset: -20%;
-  opacity: 0.04;
+  opacity: 0.05;
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .signal__scan { animation: none; display: none; }
 }
 
 /* ---------- header ---------- */
@@ -174,7 +160,7 @@ a { color: var(--accent); }
 
 .wallet-dot--live {
   background: var(--accent);
-  box-shadow: 0 0 6px 1px rgba(198, 255, 61, 0.6);
+  box-shadow: 0 0 6px 1px rgba(255, 90, 31, 0.6);
 }
 
 /* ---------- hero ---------- */
@@ -207,11 +193,19 @@ a { color: var(--accent); }
   margin: 0;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(30px, 5vw, 50px);
-  line-height: 1.1;
+  font-size: clamp(34px, 5.6vw, 56px);
+  line-height: 1.05;
   letter-spacing: -0.01em;
   text-transform: uppercase;
   color: var(--ink);
+}
+
+.hero__title em {
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-weight: 400;
+  text-transform: none;
+  color: var(--accent);
 }
 
 .glow-text {
@@ -447,7 +441,7 @@ a { color: var(--accent); }
   transition: transform 0.08s ease, background 0.15s ease;
 }
 
-.btn-run:hover:not(:disabled) { background: #d9ff70; }
+.btn-run:hover:not(:disabled) { background: var(--accent-soft); }
 .btn-run:active:not(:disabled) { transform: scale(0.98); }
 
 .btn-run:disabled {
