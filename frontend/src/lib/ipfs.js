@@ -1,58 +1,40 @@
-const PINATA_JWT = import.meta.env.VITE_PINATA_JWT
 const GATEWAY = import.meta.env.VITE_PINATA_GATEWAY || 'https://gateway.pinata.cloud'
 
-function assertKey() {
-  if (!PINATA_JWT) {
-    throw new Error(
-      'Missing VITE_PINATA_JWT. Add it to a .env file at the project root (see .env.example) and restart the dev server.'
-    )
-  }
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result.split(',')[1]) // strip the data: prefix
+    reader.onerror = () => reject(new Error('Could not read file'))
+    reader.readAsDataURL(file)
+  })
 }
 
-/** Uploads a raw file (the artwork) to IPFS via Pinata. Returns an ipfs:// URI. */
+/** Uploads a raw file (the artwork) to IPFS via your own /api/pinata-file route. */
 export async function uploadFileToIPFS(file) {
-  assertKey()
-  const form = new FormData()
-  form.append('file', file)
-  form.append('pinataMetadata', JSON.stringify({ name: file.name }))
+  const fileBase64 = await fileToBase64(file)
 
-  const res = await fetch('https://api.pinata.cloud/pinning/pinFileToIPFS', {
+  const res = await fetch('/api/pinata-file', {
     method: 'POST',
-    headers: { Authorization: `Bearer ${PINATA_JWT}` },
-    body: form
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ fileBase64, fileName: file.name, mimeType: file.type })
   })
 
-  if (!res.ok) {
-    const detail = await res.text().catch(() => '')
-    throw new Error(`Pinata image upload failed (${res.status}): ${detail || res.statusText}`)
-  }
-
-  const { IpfsHash } = await res.json()
-  return `ipfs://${IpfsHash}`
+  const data = await res.json()
+  if (!res.ok) throw new Error(data.error || `Image upload failed (${res.status})`)
+  return data.ipfsUri
 }
 
-/** Uploads a metadata JSON object to IPFS via Pinata. Returns an ipfs:// URI. */
+/** Uploads a metadata JSON object to IPFS via your own /api/pinata-json route. */
 export async function uploadJSONToIPFS(metadata) {
-  assertKey()
-  const res = await fetch('https://api.pinata.cloud/pinning/pinJSONToIPFS', {
+  const res = await fetch('/api/pinata-json', {
     method: 'POST',
-    headers: {
-      Authorization: `Bearer ${PINATA_JWT}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      pinataMetadata: { name: `${metadata.name || 'metadata'}.json` },
-      pinataContent: metadata
-    })
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ metadata })
   })
 
-  if (!res.ok) {
-    const detail = await res.text().catch(() => '')
-    throw new Error(`Pinata metadata upload failed (${res.status}): ${detail || res.statusText}`)
-  }
-
-  const { IpfsHash } = await res.json()
-  return `ipfs://${IpfsHash}`
+  const data = await res.json()
+  if (!res.ok) throw new Error(data.error || `Metadata upload failed (${res.status})`)
+  return data.ipfsUri
 }
 
 /** Converts an ipfs:// URI into an https gateway URL for preview purposes. */
