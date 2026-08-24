@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from 'react'
-import { BrowserProvider, Contract, Interface } from 'ethers'
+import { BrowserProvider, Contract, Interface, parseEther } from 'ethers'
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from './abi.js'
 import { uploadFileToIPFS, uploadJSONToIPFS } from './lib/ipfs.js'
 
@@ -24,6 +24,7 @@ export default function App() {
   const [connectError, setConnectError] = useState('')
 
   const [file, setFile] = useState(null)
+  const [fileError, setFileError] = useState('')
   const [preview, setPreview] = useState('')
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
@@ -102,9 +103,25 @@ export default function App() {
     }
   }, [syncNetwork])
 
+  const ACCEPTED_TYPES = ['image/png', 'image/jpeg', 'image/gif', 'image/webp']
+  const MAX_FILE_MB = 4
+
   function handleFile(e) {
     const f = e.target.files?.[0]
     if (!f) return
+
+    if (!ACCEPTED_TYPES.includes(f.type)) {
+      setFileError('Use a PNG, JPG, GIF, or WEBP image.')
+      e.target.value = ''
+      return
+    }
+    if (f.size > MAX_FILE_MB * 1024 * 1024) {
+      setFileError(`Image must be under ${MAX_FILE_MB}MB.`)
+      e.target.value = ''
+      return
+    }
+
+    setFileError('')
     setFile(f)
     setPreview(URL.createObjectURL(f))
   }
@@ -131,7 +148,7 @@ export default function App() {
       setStage('awaiting-signature')
       const signer = await provider.getSigner()
       const contract = new Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer)
-      const tx = await contract.mint(account, metadataURI)
+      const tx = await contract.mint(account, metadataURI, { value: parseEther('0.001') })
 
       setStage('pending')
       setTxHash(tx.hash)
@@ -165,6 +182,7 @@ export default function App() {
     setTxHash('')
     setTokenId(null)
     setFile(null)
+    setFileError('')
     setPreview('')
     setName('')
     setDescription('')
@@ -309,8 +327,13 @@ export default function App() {
                     ) : (
                       <p className="dropzone__hint"><strong>Click to upload</strong> or drop an image</p>
                     )}
-                    <input type="file" accept="image/*" onChange={handleFile} />
+                    <input type="file" accept="image/png,image/jpeg,image/gif,image/webp" onChange={handleFile} />
                   </div>
+                  {fileError ? (
+                    <p className="field-error">{fileError}</p>
+                  ) : (
+                    <p className="field-hint">PNG, JPG, GIF, or WEBP · up to 4MB</p>
+                  )}
                 </div>
 
                 <div className="field">
