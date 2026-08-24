@@ -183,6 +183,7 @@ export default function App() {
           <div className="brand">
             <span className="brand__mark">◆</span>
             Mintora
+            <span className="brand__net">ERC-721</span>
           </div>
 
           {account ? (
@@ -200,7 +201,7 @@ export default function App() {
 
         <div className="pipeline">
           <div className="scanframe-col">
-            <div className="scanframe-col__label">Preview</div>
+            <div className="scanframe-col__label">Token Preview</div>
             <div className={`scanframe ${isBusy ? 'scanframe--active' : ''}`}>
               {preview ? (
                 <img src={preview} alt="Artwork preview" className="scanframe__img" />
