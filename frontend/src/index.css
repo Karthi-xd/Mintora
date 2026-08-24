@@ -411,6 +411,18 @@ a { color: var(--accent); }
 
 .field { margin-bottom: 16px; }
 
+.field-hint {
+  margin: 6px 2px 0;
+  font-size: 11.5px;
+  color: var(--ink-faint);
+}
+
+.field-error {
+  margin: 6px 2px 0;
+  font-size: 11.5px;
+  color: var(--danger);
+}
+
 .field label {
   display: block;
   font-family: var(--font-body);
