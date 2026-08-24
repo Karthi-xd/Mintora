@@ -93,8 +93,9 @@ a { color: var(--accent); }
   width: 26px;
   height: 26px;
   border-radius: 8px;
-  background: var(--accent);
-  color: #1a1200;
+  background: #0d1420;
+  border: 1px solid rgba(124, 147, 179, 0.35);
+  color: #7c93b3;
   font-size: 13px;
   font-weight: 800;
 }
