@@ -20,6 +20,10 @@ export default async function handler(req, res) {
     }
 
     const buffer = Buffer.from(fileBase64, 'base64')
+    if (buffer.length > 4 * 1024 * 1024) {
+      return res.status(413).json({ error: 'Image must be under 4MB' })
+    }
+
     const blob = new Blob([buffer], { type: mimeType || 'application/octet-stream' })
 
     const form = new FormData()
