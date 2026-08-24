@@ -10,7 +10,7 @@ const STEPS = [
   { key: 'uploading-image', label: 'Uploading artwork' },
   { key: 'uploading-metadata', label: 'Preparing metadata' },
   { key: 'awaiting-signature', label: 'Confirm in wallet' },
-  { key: 'pending', label: 'Minting on Sepolia' }
+  { key: 'pending', label: 'Confirming' }
 ]
 
 function shortAddr(addr) {
@@ -183,7 +183,6 @@ export default function App() {
           <div className="brand">
             <span className="brand__mark">◆</span>
             Mintora
-            <span className="brand__net">Sepolia</span>
           </div>
 
           {account ? (
@@ -198,13 +197,6 @@ export default function App() {
             </button>
           )}
         </header>
-
-        <div className="hero">
-          <span className="hero__eyebrow">Sepolia testnet</span>
-          <h1 className="hero__title glow-text">
-            Mint your <em>NFT</em>
-          </h1>
-        </div>
 
         <div className="pipeline">
           <div className="scanframe-col">
@@ -239,11 +231,11 @@ export default function App() {
                     ? 'No wallet detected — install MetaMask to continue.'
                     : !account
                     ? 'Connect the wallet you want to mint to.'
-                    : 'Wrong network — this app mints on Sepolia.'}
+                    : 'Wrong network — switch to continue.'}
                 </p>
                 {account && !chainOk ? (
                   <button className="btn-run" onClick={switchToSepolia}>
-                    Switch to Sepolia
+                    Switch Network
                   </button>
                 ) : (
                   <button className={`btn-run ${connecting ? 'btn-run--loading' : ''}`} onClick={connectWallet} disabled={connecting}>
@@ -256,7 +248,7 @@ export default function App() {
               <div className="cert">
                 <div className="cert__seal">✓</div>
                 <h3>Mint successful</h3>
-                <p>Edition {editionLabel} is now in your wallet on Sepolia.</p>
+                <p>Edition {editionLabel} confirmed.</p>
                 <a className="cert-link" href={nftLink} target="_blank" rel="noreferrer">
                   View on Blockscout →
                 </a>
@@ -342,7 +334,7 @@ export default function App() {
         </div>
 
         <footer className="foot">
-          {shortAddr(CONTRACT_ADDRESS)} · Sepolia testnet
+          {shortAddr(CONTRACT_ADDRESS)}
         </footer>
       </div>
     </>
