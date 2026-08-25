@@ -199,13 +199,7 @@ export default function App() {
       <div className="app">
         <header className="topbar">
           <div className="brand">
-            <span className="brand__mark">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                <ellipse cx="12" cy="7.5" rx="6" ry="2.5" />
-                <path d="M6 7.5v4c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5v-4" />
-                <path d="M6 11.5v4c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5v-4" />
-              </svg>
-            </span>
+            <span className="brand__mark">M</span>
             Mintora
             <span className="brand__net">ERC-721</span>
           </div>
