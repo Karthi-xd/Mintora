@@ -13,9 +13,9 @@
   --card-line: rgba(255, 255, 255, 0.1);
   --card-line-strong: rgba(255, 255, 255, 0.2);
 
-  --accent: #cdd3dd;
-  --accent-dark: #9aa1ad;
-  --accent-soft: rgba(205, 211, 221, 0.16);
+  --accent: #ef233c;
+  --accent-dark: #c81e34;
+  --accent-soft: rgba(239, 35, 60, 0.16);
   --ok: #22c55e;
   --danger: #f87171;
 
@@ -37,9 +37,9 @@ html, body, #root { height: 100%; }
 body {
   margin: 0;
   background:
-    radial-gradient(ellipse 60% 46% at 22% 8%, rgba(205, 211, 221, 0.15), transparent 62%),
+    radial-gradient(ellipse 60% 46% at 22% 8%, rgba(239, 35, 60, 0.15), transparent 62%),
     radial-gradient(ellipse 50% 42% at 88% 92%, rgba(140, 110, 70, 0.07), transparent 60%),
-    radial-gradient(ellipse 45% 38% at 50% 50%, rgba(205, 211, 221, 0.04), transparent 65%),
+    radial-gradient(ellipse 45% 38% at 50% 50%, rgba(239, 35, 60, 0.04), transparent 65%),
     var(--canvas);
   background-attachment: fixed;
   color: var(--on-canvas);
@@ -47,7 +47,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-::selection { background: var(--accent); color: #04140e; }
+::selection { background: var(--accent); color: #fff; }
 
 :focus-visible {
   outline: 2px solid var(--accent);
@@ -94,8 +94,8 @@ a { color: var(--accent); }
   height: 26px;
   border-radius: 8px;
   background: #12131a;
-  border: 1px solid rgba(205, 211, 221, 0.3);
-  color: #cdd3dd;
+  border: 1px solid rgba(239, 35, 60, 0.3);
+  color: #ef233c;
   font-size: 13px;
   font-weight: 800;
 }
@@ -190,8 +190,8 @@ a { color: var(--accent); }
   overflow: hidden;
   box-shadow:
     0 50px 100px -30px rgba(0, 0, 0, 0.75),
-    0 0 0 1px rgba(205, 211, 221, 0.06),
-    0 0 80px -20px rgba(205, 211, 221, 0.25),
+    0 0 0 1px rgba(239, 35, 60, 0.06),
+    0 0 80px -20px rgba(239, 35, 60, 0.25),
     inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
@@ -201,12 +201,20 @@ a { color: var(--accent); }
   inset: 0;
   pointer-events: none;
   z-index: 1;
-  background: linear-gradient(
-    115deg,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(255, 255, 255, 0.02) 18%,
-    transparent 32%
-  );
+  background:
+    linear-gradient(
+      115deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.02) 18%,
+      transparent 32%
+    ),
+    repeating-linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.02) 0px,
+      rgba(255, 255, 255, 0.02) 1px,
+      transparent 1px,
+      transparent 7px
+    );
 }
 
 .pipeline::after {
@@ -242,6 +250,17 @@ a { color: var(--accent); }
 .pipeline > .scanframe-col, .pipeline > .console {
   position: relative;
   z-index: 2;
+}
+
+.pipeline__accent {
+  position: absolute;
+  top: 0;
+  left: 8%;
+  right: 8%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent) 30%, #ff8a94 50%, var(--accent) 70%, transparent);
+  z-index: 3;
+  opacity: 0.85;
 }
 
 @media (max-width: 760px) {
@@ -424,12 +443,19 @@ a { color: var(--accent); }
 }
 
 .field label {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-family: var(--font-body);
   font-weight: 600;
   font-size: 12.5px;
   color: var(--ink-dim);
   margin-bottom: 7px;
+}
+
+.field-icon {
+  color: var(--accent);
+  flex-shrink: 0;
 }
 
 .field input[type='text'],
@@ -506,8 +532,8 @@ a { color: var(--accent); }
 
 .btn-run {
   width: 100%;
-  background: linear-gradient(180deg, #f1f2f5, #b9c0cc);
-  color: #0a0a0c;
+  background: linear-gradient(180deg, #ff4d5e, #c81e34);
+  color: #fff;
   border: none;
   border-radius: 12px;
   font-family: var(--font-display);
@@ -516,10 +542,10 @@ a { color: var(--accent); }
   padding: 15px 20px;
   margin-top: 4px;
   transition: transform 0.08s ease, filter 0.15s ease, box-shadow 0.15s ease;
-  box-shadow: 0 12px 28px -8px rgba(205, 211, 221, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  box-shadow: 0 12px 28px -8px rgba(239, 35, 60, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
-.btn-run:hover:not(:disabled) { filter: brightness(1.06); }
+.btn-run:hover:not(:disabled) { filter: brightness(1.08); }
 .btn-run:active:not(:disabled) { transform: scale(0.98); }
 
 .btn-run:disabled {
