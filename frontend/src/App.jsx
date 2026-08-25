@@ -200,9 +200,10 @@ export default function App() {
         <header className="topbar">
           <div className="brand">
             <span className="brand__mark">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.6">
-                <circle cx="12" cy="12" r="8.2" />
-                <circle cx="12" cy="12" r="4.6" />
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.4">
+                <path d="M12 2.5l8 4.5v10l-8 4.5-8-4.5v-10z" />
+                <path d="M12 6.5l4.5 2.5v6l-4.5 2.5-4.5-2.5v-6z" strokeWidth="1.1" />
+                <circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none" />
               </svg>
             </span>
             Mintora
@@ -211,18 +212,20 @@ export default function App() {
 
           {account ? (
             <div className="wallet-pill wallet-pill--connected">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.6"><rect x="3" y="6" width="18" height="13" rx="2" /><path d="M3 10h18" /><circle cx="16.5" cy="14" r="1" /></svg>
               <span className={`wallet-dot ${chainOk ? 'wallet-dot--live' : ''}`} />
               {shortAddr(account)}
             </div>
           ) : (
             <button className="wallet-pill" onClick={connectWallet} disabled={connecting}>
-              <span className="wallet-dot" />
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.6"><rect x="3" y="6" width="18" height="13" rx="2" /><path d="M3 10h18" /><circle cx="16.5" cy="14" r="1" /></svg>
               {connecting ? 'Connecting…' : 'Connect Wallet'}
             </button>
           )}
         </header>
 
         <div className="pipeline">
+          <div className="pipeline__accent" />
           <div className="scanframe-col">
             <div className="scanframe-col__label">Token Preview</div>
             <div className={`scanframe ${isBusy ? 'scanframe--active' : ''}`}>
@@ -314,7 +317,10 @@ export default function App() {
                 {stage === 'error' && errorMsg && <div className="error-box">{errorMsg}</div>}
 
                 <div className="field">
-                  <label>Artwork</label>
+                  <label>
+                    <svg className="field-icon" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.6"><rect x="3" y="3" width="18" height="18" rx="3" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="M21 15l-5-5-11 11" /></svg>
+                    Artwork
+                  </label>
                   <div className="dropzone">
                     {preview ? (
                       <div className="dropzone__filled">
@@ -334,7 +340,10 @@ export default function App() {
                 </div>
 
                 <div className="field">
-                  <label>Name</label>
+                  <label>
+                    <svg className="field-icon" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M4 6h16M4 12h16M4 18h10" /></svg>
+                    Name
+                  </label>
                   <input
                     type="text"
                     placeholder="e.g. Obsidian Drift #001"
@@ -345,7 +354,10 @@ export default function App() {
                 </div>
 
                 <div className="field">
-                  <label>Description</label>
+                  <label>
+                    <svg className="field-icon" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M4 5h16M4 10h16M4 15h11M4 20h7" /></svg>
+                    Description
+                  </label>
                   <textarea
                     placeholder="What makes this piece worth minting?"
                     value={description}
