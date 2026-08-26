@@ -231,13 +231,8 @@ export default function App() {
         <header className="topbar">
           <div className="brand">
             <span className="brand__mark">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round">
-                <path d="M12 3a7 7 0 0 1 7 7v2a11 11 0 0 1-1.2 5" />
-                <path d="M12 3a7 7 0 0 0-7 7v3" />
-                <path d="M9 21a9 9 0 0 0 3-1" />
-                <path d="M6 19a9 9 0 0 1-1-4v-2a7 7 0 0 1 .5-2.6" />
-                <path d="M15 10a3 3 0 0 0-6 0v3a5 5 0 0 0 1.5 3.6" />
-                <path d="M12 10v3.5" />
+              <svg viewBox="0 0 24 24" width="14" height="14">
+                <polygon points="12,3 21,12 12,21 3,12" fill="#fcd535" />
               </svg>
             </span>
             Mintora

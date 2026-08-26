@@ -93,7 +93,7 @@ a { color: var(--accent); }
   width: 26px;
   height: 26px;
   border-radius: 8px;
-  background: #12131a;
+  background: linear-gradient(135deg, var(--accent-soft), #12131a);
   border: 1px solid rgba(252, 213, 53, 0.3);
   color: #fcd535;
   font-size: 13px;
