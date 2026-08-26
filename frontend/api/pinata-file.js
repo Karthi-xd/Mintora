@@ -3,9 +3,18 @@
 // using PINATA_JWT (a server-only env var, no VITE_ prefix — never bundled
 // into client JS), and returns the resulting ipfs:// URI.
 
+import { checkOrigin, rateLimit } from './_utils.js'
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
+  }
+
+  if (!checkOrigin(req)) {
+    return res.status(403).json({ error: 'Forbidden origin' })
+  }
+  if (!rateLimit(req)) {
+    return res.status(429).json({ error: 'Too many requests, slow down' })
   }
 
   const jwt = process.env.PINATA_JWT

@@ -5,6 +5,9 @@ import { uploadFileToIPFS, uploadJSONToIPFS } from './lib/ipfs.js'
 
 const SEPOLIA_CHAIN_ID_HEX = '0xaa36a7' // 11155111
 const BLOCKSCOUT_BASE = 'https://eth-sepolia.blockscout.com'
+// Public relay works but is shared/rate-limited — set VITE_SEPOLIA_RPC_URL
+// to a dedicated Alchemy/Infura endpoint for anything beyond a demo.
+const SEPOLIA_RPC_URL = import.meta.env.VITE_SEPOLIA_RPC_URL || 'https://rpc.sepolia.org'
 
 const STEPS = [
   { key: 'uploading-image', label: 'Uploading artwork' },
@@ -80,7 +83,7 @@ export default function App() {
               chainId: SEPOLIA_CHAIN_ID_HEX,
               chainName: 'Sepolia',
               nativeCurrency: { name: 'Sepolia ETH', symbol: 'ETH', decimals: 18 },
-              rpcUrls: ['https://rpc.sepolia.org'],
+              rpcUrls: [SEPOLIA_RPC_URL],
               blockExplorerUrls: [BLOCKSCOUT_BASE]
             }
           ]
