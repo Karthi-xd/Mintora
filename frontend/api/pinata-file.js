@@ -3,7 +3,31 @@
 // using PINATA_JWT (a server-only env var, no VITE_ prefix — never bundled
 // into client JS), and returns the resulting ipfs:// URI.
 
-import { checkOrigin, rateLimit } from './_utils.js'
+const WINDOW_MS = 60_000
+const MAX_REQUESTS_PER_WINDOW = 10
+const hits = new Map()
+
+function checkOrigin(req) {
+  const allowed = (process.env.ALLOWED_ORIGIN || '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean)
+  if (allowed.length === 0) return true
+  const origin = req.headers.origin || req.headers.referer || ''
+  return allowed.some((a) => origin.startsWith(a))
+}
+
+function rateLimit(req) {
+  const ip =
+    req.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
+    req.socket?.remoteAddress ||
+    'unknown'
+  const now = Date.now()
+  const recent = (hits.get(ip) || []).filter((t) => now - t < WINDOW_MS)
+  recent.push(now)
+  hits.set(ip, recent)
+  return recent.length <= MAX_REQUESTS_PER_WINDOW
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
