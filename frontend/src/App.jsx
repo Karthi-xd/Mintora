@@ -35,6 +35,22 @@ export default function App() {
   const [tokenId, setTokenId] = useState(null)
 
   const provider = useMemo(() => (window.ethereum ? new BrowserProvider(window.ethereum) : null), [])
+  const [supply, setSupply] = useState(null) // { minted, max }
+
+  const loadSupply = useCallback(async () => {
+    if (!provider) return
+    try {
+      const readContract = new Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider)
+      const [minted, max] = await Promise.all([readContract.totalMinted(), readContract.MAX_SUPPLY()])
+      setSupply({ minted: minted.toString(), max: max.toString() })
+    } catch {
+      // Contract may not expose these views — fine to just skip the readout.
+    }
+  }, [provider])
+
+  useEffect(() => {
+    loadSupply()
+  }, [loadSupply])
 
   const switchToSepolia = useCallback(async () => {
     try {
@@ -170,6 +186,7 @@ export default function App() {
       }
 
       setStage('confirmed')
+      loadSupply()
     } catch (err) {
       setErrorMsg(err?.shortMessage || err?.reason || err?.message || 'Something went wrong while minting.')
       setStage('error')
@@ -224,17 +241,6 @@ export default function App() {
           )}
         </header>
 
-        <div className="hero">
-          <span className="hero__eyebrow">Sepolia Testnet · ERC-721</span>
-          <h1 className="hero__title">
-            Strike a piece into <em>permanent</em> record.
-          </h1>
-          <p className="hero__sub">
-            Upload your artwork, pin it to IPFS, and mint it straight from your
-            connected wallet — no middleman, no queue.
-          </p>
-        </div>
-
         <div className="pipeline">
           <div className="scanframe-col">
             <div className="scanframe-col__label">Token Preview</div>
@@ -257,6 +263,12 @@ export default function App() {
               <span>Status</span>
               <strong>{isBusy ? 'Minting' : stage === 'confirmed' ? 'Minted' : 'Draft'}</strong>
             </div>
+            {supply && (
+              <div className="scanframe-col__meta">
+                <span>Supply</span>
+                <strong>{supply.minted} / {supply.max}</strong>
+              </div>
+            )}
           </div>
 
           <div className="console">
@@ -385,7 +397,7 @@ export default function App() {
         </div>
 
         <footer className="foot">
-          Mintora · Sepolia Testnet · Contract {shortAddr(CONTRACT_ADDRESS)}
+          {shortAddr(CONTRACT_ADDRESS)}
         </footer>
       </div>
     </>
