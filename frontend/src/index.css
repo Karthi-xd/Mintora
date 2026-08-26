@@ -65,6 +65,31 @@ a { color: var(--accent); }
   padding: 28px 24px 64px;
 }
 
+/* ---------- hero ---------- */
+
+.hero {
+  text-align: center;
+  margin: 12px 0 32px;
+}
+
+.hero__title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 30px;
+  color: var(--on-canvas);
+  margin: 0 0 8px;
+  letter-spacing: -0.01em;
+}
+
+.hero__subtitle {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--on-canvas-dim);
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
 /* ---------- header ---------- */
 
 .topbar {

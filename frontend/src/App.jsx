@@ -231,6 +231,11 @@ export default function App() {
   return (
     <>
       <div className="app">
+        <div className="hero">
+          <h1 className="hero__title">Mint your edition</h1>
+          <p className="hero__subtitle">Upload artwork, set a name, and mint an ERC-721 on Sepolia — on-chain in a few clicks.</p>
+        </div>
+
         <header className="topbar">
           <div className="brand">
             <span className="brand__mark">
