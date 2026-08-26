@@ -201,20 +201,12 @@ a { color: var(--accent); }
   inset: 0;
   pointer-events: none;
   z-index: 1;
-  background:
-    linear-gradient(
-      115deg,
-      rgba(255, 255, 255, 0.1) 0%,
-      rgba(255, 255, 255, 0.02) 18%,
-      transparent 32%
-    ),
-    repeating-linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.02) 0px,
-      rgba(255, 255, 255, 0.02) 1px,
-      transparent 1px,
-      transparent 7px
-    );
+  background: linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.02) 18%,
+    transparent 32%
+  );
 }
 
 .pipeline::after {
@@ -250,17 +242,6 @@ a { color: var(--accent); }
 .pipeline > .scanframe-col, .pipeline > .console {
   position: relative;
   z-index: 2;
-}
-
-.pipeline__accent {
-  position: absolute;
-  top: 0;
-  left: 8%;
-  right: 8%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--accent) 30%, #ff8a94 50%, var(--accent) 70%, transparent);
-  z-index: 3;
-  opacity: 0.85;
 }
 
 @media (max-width: 760px) {
