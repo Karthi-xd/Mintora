@@ -1,7 +1,7 @@
 /* ============================================================
    Mintora — professional mint UI
    Dark canvas, crisp light card, single confident accent
-   Type: Plus Jakarta Sans (headings) · Inter (body) · IBM Plex Mono (data)
+   Type: Archivo (headings) · Inter (body) · IBM Plex Mono (data)
    ============================================================ */
 
 :root {
@@ -13,9 +13,9 @@
   --card-line: rgba(255, 255, 255, 0.1);
   --card-line-strong: rgba(255, 255, 255, 0.2);
 
-  --accent: #ef233c;
-  --accent-dark: #c81e34;
-  --accent-soft: rgba(239, 35, 60, 0.16);
+  --accent: #fcd535;
+  --accent-dark: #e0b800;
+  --accent-soft: rgba(252, 213, 53, 0.16);
   --ok: #22c55e;
   --danger: #f87171;
 
@@ -26,7 +26,7 @@
   --on-canvas: #f2f1ee;
   --on-canvas-dim: #85848a;
 
-  --font-display: 'Plus Jakarta Sans', sans-serif;
+  --font-display: 'Archivo', sans-serif;
   --font-body: 'Inter', sans-serif;
   --font-mono: 'IBM Plex Mono', monospace;
 }
@@ -37,9 +37,9 @@ html, body, #root { height: 100%; }
 body {
   margin: 0;
   background:
-    radial-gradient(ellipse 60% 46% at 22% 8%, rgba(239, 35, 60, 0.15), transparent 62%),
+    radial-gradient(ellipse 60% 46% at 22% 8%, rgba(252, 213, 53, 0.15), transparent 62%),
     radial-gradient(ellipse 50% 42% at 88% 92%, rgba(140, 110, 70, 0.07), transparent 60%),
-    radial-gradient(ellipse 45% 38% at 50% 50%, rgba(239, 35, 60, 0.04), transparent 65%),
+    radial-gradient(ellipse 45% 38% at 50% 50%, rgba(252, 213, 53, 0.04), transparent 65%),
     var(--canvas);
   background-attachment: fixed;
   color: var(--on-canvas);
@@ -47,7 +47,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-::selection { background: var(--accent); color: #fff; }
+::selection { background: var(--accent); color: #0a0a0c; }
 
 :focus-visible {
   outline: 2px solid var(--accent);
@@ -94,8 +94,8 @@ a { color: var(--accent); }
   height: 26px;
   border-radius: 8px;
   background: #12131a;
-  border: 1px solid rgba(239, 35, 60, 0.3);
-  color: #ef233c;
+  border: 1px solid rgba(252, 213, 53, 0.3);
+  color: #fcd535;
   font-size: 13px;
   font-weight: 800;
 }
@@ -140,6 +140,13 @@ a { color: var(--accent); }
 .wallet-dot--live {
   background: var(--ok);
   box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.2);
+}
+
+.wallet-pill__balance {
+  padding-left: 8px;
+  margin-left: 2px;
+  border-left: 1px solid var(--canvas-line);
+  color: var(--on-canvas-dim);
 }
 
 /* ---------- hero ---------- */
@@ -190,8 +197,8 @@ a { color: var(--accent); }
   overflow: hidden;
   box-shadow:
     0 50px 100px -30px rgba(0, 0, 0, 0.75),
-    0 0 0 1px rgba(239, 35, 60, 0.06),
-    0 0 80px -20px rgba(239, 35, 60, 0.25),
+    0 0 0 1px rgba(252, 213, 53, 0.06),
+    0 0 80px -20px rgba(252, 213, 53, 0.25),
     inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
@@ -513,8 +520,8 @@ a { color: var(--accent); }
 
 .btn-run {
   width: 100%;
-  background: linear-gradient(180deg, #ff4d5e, #c81e34);
-  color: #fff;
+  background: linear-gradient(180deg, #fde35f, #e0b800);
+  color: #0a0a0c;
   border: none;
   border-radius: 12px;
   font-family: var(--font-display);
@@ -523,7 +530,7 @@ a { color: var(--accent); }
   padding: 15px 20px;
   margin-top: 4px;
   transition: transform 0.08s ease, filter 0.15s ease, box-shadow 0.15s ease;
-  box-shadow: 0 12px 28px -8px rgba(239, 35, 60, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: 0 12px 28px -8px rgba(252, 213, 53, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 
 .btn-run:hover:not(:disabled) { filter: brightness(1.08); }

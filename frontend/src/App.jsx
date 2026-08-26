@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from 'react'
-import { BrowserProvider, Contract, Interface, parseEther } from 'ethers'
+import { BrowserProvider, Contract, Interface, parseEther, formatEther } from 'ethers'
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from './abi.js'
 import { uploadFileToIPFS, uploadJSONToIPFS } from './lib/ipfs.js'
 
@@ -19,6 +19,7 @@ function shortAddr(addr) {
 
 export default function App() {
   const [account, setAccount] = useState(null)
+  const [balance, setBalance] = useState(null)
   const [chainOk, setChainOk] = useState(false)
   const [connecting, setConnecting] = useState(false)
   const [connectError, setConnectError] = useState('')
@@ -41,8 +42,12 @@ export default function App() {
     if (!provider) return
     try {
       const readContract = new Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider)
-      const [minted, max] = await Promise.all([readContract.totalMinted(), readContract.MAX_SUPPLY()])
-      setSupply({ minted: minted.toString(), max: max.toString() })
+      const [minted, max, price] = await Promise.all([
+        readContract.totalMinted(),
+        readContract.MAX_SUPPLY(),
+        readContract.mintPrice()
+      ])
+      setSupply({ minted: minted.toString(), max: max.toString(), price: formatEther(price) })
     } catch {
       // Contract may not expose these views — fine to just skip the readout.
     }
@@ -51,6 +56,14 @@ export default function App() {
   useEffect(() => {
     loadSupply()
   }, [loadSupply])
+
+  useEffect(() => {
+    if (!provider || !account) {
+      setBalance(null)
+      return
+    }
+    provider.getBalance(account).then((bal) => setBalance(formatEther(bal))).catch(() => setBalance(null))
+  }, [provider, account, chainOk])
 
   const switchToSepolia = useCallback(async () => {
     try {
@@ -164,7 +177,7 @@ export default function App() {
       setStage('awaiting-signature')
       const signer = await provider.getSigner()
       const contract = new Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer)
-      const tx = await contract.mint(account, metadataURI, { value: parseEther('0.001') })
+      const tx = await contract.mint(account, metadataURI, { value: parseEther(supply?.price || '0.001') })
 
       setStage('pending')
       setTxHash(tx.hash)
@@ -187,6 +200,7 @@ export default function App() {
 
       setStage('confirmed')
       loadSupply()
+      provider.getBalance(account).then((bal) => setBalance(formatEther(bal))).catch(() => {})
     } catch (err) {
       setErrorMsg(err?.shortMessage || err?.reason || err?.message || 'Something went wrong while minting.')
       setStage('error')
@@ -217,10 +231,13 @@ export default function App() {
         <header className="topbar">
           <div className="brand">
             <span className="brand__mark">
-              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.4">
-                <path d="M12 2.5l8 4.5v10l-8 4.5-8-4.5v-10z" />
-                <path d="M12 6.5l4.5 2.5v6l-4.5 2.5-4.5-2.5v-6z" strokeWidth="1.1" />
-                <circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none" />
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round">
+                <path d="M12 3a7 7 0 0 1 7 7v2a11 11 0 0 1-1.2 5" />
+                <path d="M12 3a7 7 0 0 0-7 7v3" />
+                <path d="M9 21a9 9 0 0 0 3-1" />
+                <path d="M6 19a9 9 0 0 1-1-4v-2a7 7 0 0 1 .5-2.6" />
+                <path d="M15 10a3 3 0 0 0-6 0v3a5 5 0 0 0 1.5 3.6" />
+                <path d="M12 10v3.5" />
               </svg>
             </span>
             Mintora
@@ -232,6 +249,7 @@ export default function App() {
               <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.6"><rect x="3" y="6" width="18" height="13" rx="2" /><path d="M3 10h18" /><circle cx="16.5" cy="14" r="1" /></svg>
               <span className={`wallet-dot ${chainOk ? 'wallet-dot--live' : ''}`} />
               {shortAddr(account)}
+              {balance !== null && <span className="wallet-pill__balance">{Number(balance).toFixed(3)} ETH</span>}
             </div>
           ) : (
             <button className="wallet-pill" onClick={connectWallet} disabled={connecting}>
@@ -267,6 +285,12 @@ export default function App() {
               <div className="scanframe-col__meta">
                 <span>Supply</span>
                 <strong>{supply.minted} / {supply.max}</strong>
+              </div>
+            )}
+            {supply && (
+              <div className="scanframe-col__meta">
+                <span>Price</span>
+                <strong>{supply.price} ETH</strong>
               </div>
             )}
           </div>
@@ -389,7 +413,7 @@ export default function App() {
                 </div>
 
                 <button className="btn-run" onClick={handleMint} disabled={!canMint}>
-                  Mint NFT
+                  Mint NFT{supply ? ` · ${supply.price} ETH` : ''}
                 </button>
               </div>
             )}
