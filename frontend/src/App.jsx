@@ -233,7 +233,7 @@ export default function App() {
       <div className="app">
         <div className="hero">
           <h1 className="hero__title">MINT NFT</h1>
-          <p className="hero__subtitle">Upload artwork, set a name, and mint an ERC-721 on Sepolia — on-chain in a few clicks.</p>
+          <p className="hero__subtitle">Tokenize your digital art instantly. Retain provenance and launch on-chain effortlessly.</p>
         </div>
 
         <header className="topbar">
